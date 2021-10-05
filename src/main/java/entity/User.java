@@ -7,7 +7,7 @@ public class User {
     private String phone;
     private String username;
     private String password;
-    private boolean active;
+    private boolean isActive;
 
     public User() {
     }
@@ -19,7 +19,16 @@ public class User {
         this.phone = phone;
         this.username = username;
         this.password = password;
-        this.active = isActive;
+        this.isActive = isActive;
+    }
+    public User(String name, String email, String phone, String username, String password, boolean isActive) {
+
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.username = username;
+        this.password = password;
+        this.isActive = isActive;
     }
 
     public String getEmail() {
@@ -70,11 +79,12 @@ public class User {
         this.password = password;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean getActive() {
+        return isActive;
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        this.isActive = active;
     }
 }
+

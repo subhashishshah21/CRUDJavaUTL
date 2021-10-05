@@ -1,6 +1,7 @@
 package controller;
 
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import dao.UserDAO;
 import entity.User;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * This servlet program is used to print "Hello World" on
  * client browser using annotations.
  */
-@WebServlet(urlPatterns = {"/admin", "/users"})
+@WebServlet(urlPatterns = {"/admin", "/users","/createUser","/viewUser","/deleteuser","/edituser","/updateuser"})
 public class AdminController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -37,6 +38,7 @@ public class AdminController extends HttpServlet {
         if (path.equals("/admin")) {
 
             view = request.getRequestDispatcher("admin/success.jsp");
+            view.forward(request, response);
 
         }
 
@@ -46,10 +48,51 @@ public class AdminController extends HttpServlet {
             List<User> users = userDAO.findAll();
             request.setAttribute("usersList", users);
             view = request.getRequestDispatcher("admin/users.jsp");
+            view.forward(request, response);
+
+        }
+        if (path.equals("/createUser")) {
+
+            view = request.getRequestDispatcher("admin/createuser.jsp");
+            view.forward(request, response);
+
+        }
+        if (path.equals("/deleteuser")) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            UserDAO delete = new UserDAO();
+            delete.delete(id);
+            response.sendRedirect("/users");
+
+        }
+        if (path.equals("/viewUser")) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            System.out.println(id);
+            UserDAO user = new UserDAO();
+            User usr = user.findById(id) ;
+
+            request.setAttribute("ouruser",usr);
+
+
+            view = request.getRequestDispatcher("admin/viewDetails.jsp");
+            view.forward(request, response);
+
+        }
+        if (path.equals("/edituser")) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            System.out.println(id);
+            UserDAO user = new UserDAO();
+            User usr = user.findById(id) ;
+
+            request.setAttribute("ouruser",usr);
+
+
+            view = request.getRequestDispatcher("admin/edituser.jsp");
+            view.forward(request, response);
 
         }
 
-        view.forward(request, response);
+
+
     }
 
 //    private List<User> runthis() {
@@ -96,10 +139,35 @@ public class AdminController extends HttpServlet {
         String path = request.getServletPath();
         System.out.println(path);
 
-        if (request.getServletPath().equals("/hero")) {
-            RequestDispatcher view = request.getRequestDispatcher("admin.jsp");
-            view.forward(request, response);
+        if (request.getServletPath().equals("/createUser")) {
+            String name = request.getParameter("name");
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            String email = request.getParameter("email");
+            String phone = request.getParameter("phone");
+            boolean active = Boolean.parseBoolean(request.getParameter("active"));
+            User user = new User(name,email,phone,username,password,active);
+            UserDAO udao = new  UserDAO();
+            udao.create(user);
 
+
+
+            response.sendRedirect("/users");
+        }
+        if (request.getServletPath().equals("/updateuser")) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            String email = request.getParameter("email");
+            String phone = request.getParameter("phone");
+            boolean active = Boolean.parseBoolean(request.getParameter("active"));
+            User user = new User(id,name,email,phone,username,password,active);
+            UserDAO udao = new  UserDAO();
+            udao.update(user);
+
+            response.sendRedirect("/users");
         }
     }
+
 }

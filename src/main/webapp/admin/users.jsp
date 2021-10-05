@@ -9,9 +9,11 @@
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet"
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+
 </head>
 <body>
 <h1>All Users</h1>
+ <a href="/createUser">Create Users</a>
    <table class="table">
      <thead>
        <tr>
@@ -22,6 +24,7 @@
          <th scope="col">Email</th>
          <th scope="col">Phone</th>
          <th scope="col">Is Active </th>
+         <th>Action</th>
        </tr>
      </thead>
      <tbody>
@@ -36,6 +39,7 @@
           <td>${user.email}</td>
           <td>${user.phone}</td>
           <td>${user.active}</td>
+          <td><a href="viewUser?id=${user.id}">Details </a><a href="edituser?id=${user.id}">Edit</a> <a href="deleteuser?id=${user.id}">Delete</a></td>
        </tr>
 
        </c:forEach>

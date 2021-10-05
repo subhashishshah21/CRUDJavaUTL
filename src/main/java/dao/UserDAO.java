@@ -33,7 +33,7 @@ public class UserDAO {
                 String phone = rs.getString("phone");
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-                boolean isActive = rs.getBoolean("is-active");
+                boolean isActive = rs.getBoolean("isActive");
 
                // User user = new User(id, a, email, phone, username, password, isActive);
                 //either use above code or the code below
@@ -54,30 +54,33 @@ public class UserDAO {
         return users;
     }
 
-    public User findById() {
+    public User findById(int id) {
         User user = null;
 
-        final String QUERY = "select id,name,email,country,password from users where id =?";
+        final String QUERY = "select * from user where id =?";
 
         try (Connection connection = JDBCUtils.getConnection();
 
              // Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(QUERY);) {
-            preparedStatement.setInt(1, 1);
+            preparedStatement.setInt(1, id);
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
 
             // Step 4: Process the ResultSet object.
-            while (rs.next()) {
-                // rs.next();
-                int id = rs.getInt("id");
+
+                 rs.next();
+                int userid = rs.getInt("id");
                 String name = rs.getString("name");
                 String email = rs.getString("email");
-                String country = rs.getString("country");
+                String phone = rs.getString("phone");
+                String username = rs.getString("username");
                 String password = rs.getString("password");
-                System.out.println(id + "," + name + "," + email + "," + country + "," + password);
-            }
+                boolean isActive = rs.getBoolean("isActive");
+                user = new User(userid,name,email,phone,username,password,isActive);
+
+
         } catch (SQLException e) {
             JDBCUtils.printSQLException(e);
         }
@@ -85,12 +88,12 @@ public class UserDAO {
     }
 
     public void delete(int id) {
-        String QUERY = "delete from users where id=? ";
+        String QUERY = "delete from user where id=? ";
         try (Connection connection = JDBCUtils.getConnection();
 
              // Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(QUERY)) {
-            preparedStatement.setInt(1, 2);
+            preparedStatement.setInt(1, id);
             // preparedStatement.setInt(1, 1);
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query
@@ -114,19 +117,21 @@ public class UserDAO {
     public void create(User user) {
 
 
-        final String INSERT_USERS_SQL = "INSERT INTO users" +
-                "  (id, name, email, country, password) VALUES " +
-                " (?, ?, ?, ?, ?);";
+        final String INSERT_USERS_SQL = "INSERT INTO user" +
+                "  (name, email, phone,username,password, isActive) VALUES " +
+                " (?, ?, ?, ?, ?,?);";
         try (Connection connection = JDBCUtils.getConnection();
 
 
              // Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL)) {
-            preparedStatement.setInt(1, user.getId());
-            preparedStatement.setString(2, user.getName());
-            preparedStatement.setString(3, user.getEmail());
-            preparedStatement.setString(4, user.getPhone());
-            preparedStatement.setString(5, user.getUsername());
+
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(3, user.getPhone());
+            preparedStatement.setString(4, user.getUsername());
+            preparedStatement.setString(5, user.getPassword());
+            preparedStatement.setBoolean(6, user.getActive());
 
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query
@@ -142,12 +147,16 @@ public class UserDAO {
 
     public void update(User user) {
         // Step 1: Establishing a Connection
-        String UPDATE_USERS_SQL = "update student set phone=? , email=? where id=?;";
+        String UPDATE_USERS_SQL = "update user set name=? , email=?, phone=?, username=?, password=?, isActive=?  where id=?;";
         try (Connection connection = JDBCUtils.getConnection();
              // Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USERS_SQL)) {
-            preparedStatement.setInt(1, user.getId());
-            preparedStatement.setString(2, user.getUsername());
+            preparedStatement.setInt(7, user.getId());
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(5, user.getPassword());
+            preparedStatement.setBoolean(6, user.getActive());
+            preparedStatement.setString(4, user.getUsername());
             preparedStatement.setString(3, user.getPhone());
 
             // Step 3: Execute the query or update query
